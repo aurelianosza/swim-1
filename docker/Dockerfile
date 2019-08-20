@@ -1,4 +1,4 @@
-FROM gabrielmoreno/omnetpp-vnc:5.2.1
+FROM martinpfannemueller/omnetpp-vnc:5.4.1
 LABEL Description="Docker image for SWIM"
 
 USER root
@@ -8,21 +8,21 @@ ENV BASE_DIR=${HOME}/seams-swim
 
 WORKDIR ${BASE_DIR}
 
-RUN git clone https://github.com/cps-sei/swim.git
+RUN git clone https://github.com/martinpfannemueller/swim.git
 
 RUN tar xzf swim/queueinglib.tgz
 
 WORKDIR ${BASE_DIR}/queueinglib
 
-RUN make
+RUN make -j$(nproc)
 
 WORKDIR ${BASE_DIR}/swim
 
-RUN make cleanall && make makefiles && make
+RUN make cleanall && make makefiles && make -j$(nproc)
 
 WORKDIR ${BASE_DIR}/swim/examples/simple_am
 
-RUN make
+RUN make -j$(nproc)
 
 RUN R -e 'install.packages("https://github.com/wilkelab/cowplot/archive/0.6.3.tar.gz", repos=NULL)'
 
@@ -33,5 +33,3 @@ RUN mkdir -p workspace; $(dirname `which omnetpp`)/../ide/omnetpp -nosplash -dat
 WORKDIR ${HOME}
 RUN mkdir -p .local/share/applications/
 COPY omnetpp.desktop .local/share/applications/
-
-
