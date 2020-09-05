@@ -2,7 +2,7 @@ version: '3'
 
 services:
   swim:
-    build: ./docker/
+    image: aurelianosza/swim
     ports:
       - '4242:4242'
       - '5901:5901'
